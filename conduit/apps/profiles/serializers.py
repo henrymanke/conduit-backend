@@ -6,7 +6,7 @@ from .models import Profile
 class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username')
     bio = serializers.CharField(allow_blank=True, required=False)
-    image = serializers.SerializerMethodField()
+    image = serializers.URLField(allow_blank=True, required=False)
     following = serializers.SerializerMethodField()
 
     class Meta:
@@ -33,3 +33,13 @@ class ProfileSerializer(serializers.ModelSerializer):
         followee = instance
 
         return follower.is_following(followee)
+    
+    def to_representation(self, instance):
+        """Override the default representation to add a default image if missing."""
+        representation = super().to_representation(instance)
+
+        # Provide default image if the image field is empty or None
+        if not representation.get('image'):
+            representation['image'] = 'https://static.productionready.io/images/smiley-cyrus.jpg'
+
+        return representation
