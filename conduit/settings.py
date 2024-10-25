@@ -130,8 +130,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CORS_ORIGIN_WHITELIST = (
-    '0.0.0.0:4000',
-    'localhost:4000',
+    '0.0.0.0:8282',
+    '127.0.0.1:8282',
+    'localhost:8282',
 )
 
 # Tell Django about the custom `User` model we created. The string

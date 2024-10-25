@@ -93,6 +93,7 @@ class ArticleViewSet(mixins.CreateModelMixin,
             raise NotFound('An article with this slug does not exist.')
             
         serializer_data = request.data.get('article', {})
+        serializer_context = {'request': request}
 
         serializer = self.serializer_class(
             serializer_instance, 
@@ -104,6 +105,18 @@ class ArticleViewSet(mixins.CreateModelMixin,
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def destroy(self, request, slug):
+        # DELETE method functionality to remove an article
+        try:
+            article = self.queryset.get(slug=slug)
+        except Article.DoesNotExist:
+            raise NotFound('An article with this slug does not exist.')
+
+        # You can add custom permission checks here if needed, e.g., only allow author to delete
+        article.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CommentsListCreateAPIView(generics.ListCreateAPIView):
